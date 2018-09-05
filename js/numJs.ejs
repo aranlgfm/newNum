@@ -1,0 +1,138 @@
+<script>
+    var socket = io();
+
+    // 컴퓨터가 랜덤으로 1~9의 숫자로 된 3자리 숫자를 생성
+    // 플레이어가 입력한 숫자와 컴퓨터가 생성한 숫자를 비교
+    // 자리는 다르지만 같은 숫자가 있을 경우 볼
+    // 같은 자리에 같은 숫자가 왔을 경우 홈런
+    // 모두 다른 숫자이면 아웃
+    // 홈런, 볼, 아웃의 결과를 숫자 옆에 출력
+    // 맞을 때까지 반복
+    // 맞으면 게임종료메시지 출력
+    // 입력버튼 누르면 입력창으로 포커스이동
+    // 게임 끝나면 다시하기 버튼 눌러서 초기화하기
+    var com = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    for (c = 0; c < 10000; c++) {
+        cRan = Math.floor(Math.random() * com.length);
+        var temp = com[0];
+        com[0] = com[cRan];
+        com[cRan] = temp;
+    };
+    var comNum = com.slice(0, 4);
+
+    // 컴퓨터가 선택한 수를 확인
+    //console.log(comNum);
+
+    // $(document).ready(function () {
+
+    // 인풋텍스트에서 엔터 쳤을 경우
+    $("#myNumber").keydown(function (key) {
+        if (key.keyCode == 13) {
+            checkNum();
+        }
+    });
+
+    // 입력값의 길이를 4로 제한하기
+    $("#myNumber").keypress(function () {
+        var pNum = document.querySelector("#myNumber").value;
+        if (pNum.length == 4) {
+            $("#myNumber").attr("readonly", true);
+            $("#myNumber").css("background-color", "lightslategray");
+            $("#myNumber").css("color", "white");
+        }
+    });
+
+    // 입력칸에 클릭하면 수정할 수 있게 해주기
+    $("#myNumber").click(function () {
+        $("#myNumber").attr("readonly", false);
+        $("#myNumber").css("background-color", "white");
+        $("#myNumber").css("color", "black");
+    });
+
+    // 입력칸에서 커서 사라졌을 때 4자리가 다 차있으면 readonly로 변경
+    $("#myNumber").blur(function () {
+        var pNum = document.querySelector("#myNumber").value;
+        if (pNum.length == 4) {
+            $("#myNumber").attr("readonly", true);
+            $("#myNumber").css("background-color", "lightslategray");
+            $("#myNumber").css("color", "white");
+        }
+    });
+
+    // 숫자계산 함수
+    checkNum = function () {
+        var pNum = document.querySelector("#myNumber").value;
+
+        // 입력값이 있는지 확인
+        if (pNum.length == 0) {
+            $("#noteMsg").fadeIn("slow");
+            $("#noteMsg").text("입력된 값이 없습니다.");
+            $("#noteMsg").delay(700);
+            $("#noteMsg").fadeOut("slow");
+            return;
+        }
+
+        //console.log(pNum);			// 플레이어가 입력한 숫자
+        var myNum = [];
+        myNum[0] = pNum.substring(0, 1);
+        myNum[1] = pNum.substring(1, 2);
+        myNum[2] = pNum.substring(2, 3);
+        myNum[3] = pNum.substring(3, 4);
+
+        // 입력값이 숫자인지 확인
+        // 이미 입력한 숫자를 다시 입력했는지 확인
+
+        var outText = document.querySelector("#outputNum1");
+        var count = 1;
+        var stC = count++;
+        var baC = count++;
+        var baCount = 0;
+        var stCount = 0;
+        var outCount = 0;
+        pNum = "";
+
+        for (var t = 0; t < myNum.length; t++) {
+            if (myNum[t] == comNum[0] || myNum[t] == comNum[1] || myNum[t] == comNum[2] || myNum[t] == comNum[3]) {
+                baCount += 1;
+                if (myNum[t] == comNum[t]) {
+                    baCount -= 1;
+                    stCount += 1;
+                }
+            } else {
+                outCount += 1;
+            }
+        };
+
+        if (outCount == comNum.length) {
+            // outText.innerHTML += myNum[0] + myNum[1] + myNum[2] + myNum[3] + " : " + "out" + "<br/>";
+            $("#resTable > tbody:last").append("<tr><td >" + myNum[0] + "</td><td>" + myNum[1] + "</td><td>" + myNum[2] + "</td><td>" + myNum[3] + "</td><td style='text-align: left; width : 60%;'>" + " : " + "out" + "</td></tr>");
+        } else if (baCount != 0 && stCount != 0) {
+            // outText.innerHTML += myNum[0] + myNum[1] + myNum[2] + myNum[3] + " : " + stCount + " Strike, " + baCount + " Ball" + "<br/>";
+            $("#resTable > tbody:last").append("<tr><td>" + myNum[0] + "</td><td>" + myNum[1] + "</td><td>" + myNum[2] + "</td><td>" + myNum[3] + "</td><td style='text-align: left; width : 60%;'>" + " : " + stCount + " Strike, " + baCount + " Ball" + "</td></tr>");
+        } else if (baCount == 0 && stCount != comNum.length) {
+            // outText.innerHTML += myNum[0] + myNum[1] + myNum[2] + myNum[3] + " : " + stCount + " Strike" + "<br/>";
+            $("#resTable > tbody:last").append("<tr><td>" + myNum[0] + "</td><td>" + myNum[1] + "</td><td>" + myNum[2] + "</td><td>" + myNum[3] + "</td><td style='text-align: left; width : 60%;'>" + " : " + stCount + " Strike" + "</td></tr>");
+        } else if (stCount == 0) {
+            // outText.innerHTML += myNum[0] + myNum[1] + myNum[2] + myNum[3] + " : " + baCount + " Ball" + "<br/>";
+            $("#resTable > tbody:last").append("<tr><td>" + myNum[0] + "</td><td>" + myNum[1] + "</td><td>" + myNum[2] + "</td><td>" + myNum[3] + "</td><td style='text-align: left; width : 60%;'>" + " : " + baCount + " Ball" + "</td></tr>");
+        } else if (stCount == comNum.length) {
+            // outText.innerHTML += myNum[0] + myNum[1] + myNum[2] + myNum[3] + " : " + "정답입니다!" + "<br/>";
+            $("#resTable > tbody:last").append("<tr><td>" + myNum[0] + "</td><td>" + myNum[1] + "</td><td>" + myNum[2] + "</td><td>" + myNum[3] + "</td><td style='width : 60%;'>" + " : " + "정답입니다!" + "</td></tr>");
+        }
+
+        $("#myNumber").val("");
+
+        $("#myNumber").focus();
+    }
+
+    // 숫자입력 버튼 클릭
+    $("#btn").click(function () {
+        checkNum();
+    });
+
+    // 다시하기 버튼 클릭
+    $("#rebtn").click(function () {
+        location.reload();
+    });
+// });
+</script>

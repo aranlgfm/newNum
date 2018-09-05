@@ -1,0 +1,106 @@
+<style>
+    #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        height: 300px;
+    }
+
+    #messages li {
+        padding: 5px 10px;
+        font-family: 'Do Hyeon', sans-serif;
+        font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+        #messages li {
+            font-size: 25px;
+        }
+    }
+
+    #noti {
+        color: skyblue;
+    }
+
+    #chatLog {
+        width: 500px;
+        height: 300px;
+        /* border: 2px solid gray; */
+        /* padding: 15px; */
+        margin: auto;
+        overflow-y: scroll;
+    }
+
+    #chatInput {
+        margin: auto;
+        width: 500px;
+        height: 100px;
+    }
+
+    #m {
+        border: 2px solid grey;
+        border-radius: 25px;
+        padding: 5px 15px;
+        width: 380px;
+        font-family: 'Do Hyeon', sans-serif;
+        font-size: 100%;
+        text-align: left;
+
+        outline: none;
+    }
+
+    @media (max-width: 600px) {
+        #m {
+            font-size: 150%;
+        }
+    }
+
+    #sendBtn {
+        background-color: white;
+        border: 2px solid gray;
+        color: gray;
+        text-align: center;
+        display: inline-block;
+        -webkit-transition-duration: 0.4s;
+        transition-duration: 0.4s;
+        width: 70px;
+        height: 35px;
+        padding: 5px;
+        margin: 5px;
+        border-radius: 25px;
+        outline: none;
+        font-family: 'Nanum Pen Script', cursive;
+        font-size: 120%;
+    }
+
+    @media (max-width: 600px) {
+        #sendBtn {
+            font-size: 170%;
+        }
+    }
+
+    #sendBtn:hover {
+        background-color: gray;
+        color: white;
+        /* border: 2px solid dodgerblue; */
+        border: 2px solid gray;
+    }
+
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        border: 1px solid gray;
+        border-radius: 15px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: gray;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: dimgrey;
+    }
+</style>

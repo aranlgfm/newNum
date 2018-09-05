@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숫자야구</title>
+<link href="https://fonts.googleapis.com/css?family=Do+Hyeon|Nanum+Pen+Script" rel="stylesheet">
+    <%include numStyle.ejs%>
+        <style>
+        </style>
+        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <script>
+        </script>
+</head>
+
+<body>
+    <div>
+        <h1>숫자야구</h1>
+        <table id="numTable">
+            <tr>
+                <td id="notiText">숫자만 입력해주세요. 4자리 뒤의 숫자는 사라집니다.</td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="noteMsg"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="myNumber" type="text" value="">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="btnDiv">
+        <input id="btn" class="btnText" type="button" value="숫자입력" />
+        <input id="rebtn" class="btnText" type="button" value="다시하기" />
+    </div>
+    <div id="outNumBox">
+        <table id="resTable">
+            <tr>
+            </tr>
+        </table>
+    </div>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <%include ../js/numJs.ejs%>
+</body>
+
+</html>
