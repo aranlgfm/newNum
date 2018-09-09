@@ -7,6 +7,9 @@ var path = require('path');
 var addr = "";
 var nick = "";
 
+var playerList = [
+];
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 
@@ -16,12 +19,12 @@ function List() {
     this.idx = 0;
     this.length = 0;
 }
-List.prototype.add = function (element) {
+List.prototype.add = function(element) {
     this.length++;
     this.elements[this.idx++] = element;
 };
 
-List.prototype.get = function (idx) {
+List.prototype.get = (idx)=> {
     return this.elements[idx];
 };
 
@@ -36,14 +39,9 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
 });
 
 // 메인 페이지 접속
-app.post('/room', function (req, res) {
-    // res.sendfile('chat.ejs');
-    console.log(">>>>>>>>>>>>>"+req.body.nameInput+"-----------??????????????????????");
-    // res.sendfile('chat.ejs');
+app.post('/room', (req, res) =>{
     nick = req.body.nameInput;
-    // res.sendfile(path.join(__dirname+'/views', 'chat.ejs'));
     res.render(path.join('chat.ejs'));
-    // res.render('chat.ejs');
 });
 
 app.get('/', (req, res)=>{
@@ -51,28 +49,52 @@ app.get('/', (req, res)=>{
 });
 
 // 유저 접속
-io.on('connection', function (socket) {
-    console.log(nick + '-------in');
-    io.to(socket.id).emit('enter user', nick);
+io.on('connection', (socket)=> {
+    // console.log(nick + '-------in');
+
+    // 중복유저를 확인하고 유저목록 저장
+    if(!(nick=='')){
+        var player = { joinnick : '', joinaddr : '' }
+        var chNick = nick;
+        var chAddr = socket.client.conn.remoteAddress;
+        
+        // 이미 있는 닉네임인지 확인
+        var checkNick = playerList.filter((player)=>{
+            return player.joinnick==chNick
+        });
+        
+        // 이미 접속한 ip인지 확인
+        var checkAddr = playerList.filter((player)=>{
+            return player.joinaddr==chAddr
+        });
+        
+        // 체크 후 문제가 없으면 유저를 저장한다.
+        if(checkNick=='' && checkAddr==''){
+            player.joinnick = chNick;
+            player.joinaddr = chAddr;
+            playerList.push(player);
+        };
+    };
+
+    console.log(playerList);
+
     io.emit('guestIn', nick);
     // userList.add(userList.length);
 
-    socket.on('enter user', (nick)=>{
-        console.log(socket.id);
-    })
-
-    socket.on('user join', (res)=>{
-        socket.join(res);
-        console.log(res+'--------------my name!');
-    });
+    socket.emit('user join', nick);
 
     // 채팅 업데이트
-    console.log('connection' + nick);
-    socket.on('chat message', function (msg) {
-        io.emit('chat message', nick + ' >> ' + msg);
+    socket.on('chat message', function (msg, userName) {
+        io.emit('chat message', userName + ' >> ' + msg);
     });
 
+    // 퇴장하면 접속 유저 목록에서 제외해준다.
     socket.on('disconnect', function () {
-            io.emit('guestOut', nick);
+        var s = playerList.findIndex((player)=>{
+            return player.joinnick==chNick
+        })
+        playerList.splice(s, 1);
+        console.log('user out-----------------------');
+        io.emit('guestOut', nick);
         });
 });

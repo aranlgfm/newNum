@@ -1,13 +1,17 @@
 <script>
     var socket = io();
 
-    socket.on('enter user', (nick)=>{
-        console.log(nick+'<<<< my nick!');
+    var myName = '';
+
+    socket.on('user join', (res)=>{
+        console.log(res+'<<<<< user nick set')
+        $('#userName').val(res);
+        myName = res;
     });
 
     // 보내기 버튼 클릭했을 때 채팅 입력
     $('#sendBtn').click(function () {
-        socket.emit('chat message', $('#m').val());
+        socket.emit('chat message', $('#m').val(), myName);
         $('#m').val('');
         return false;
     });
@@ -15,7 +19,7 @@
     // 엔터치면 채팅 입력
     $('#m').keydown(function (key) {
         if (key.keyCode == 13) {
-            socket.emit('chat message', $('#m').val());
+            socket.emit('chat message', $('#m').val(), myName);
             $('#m').val('');
             return false;
         }
