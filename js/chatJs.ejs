@@ -3,11 +3,22 @@
 
     var myName = '';
 
-    socket.on('user join', (res)=>{
-        console.log(res+'<<<<< user nick set')
+    socket.on('user join', (res) => {
+        console.log(res + '<<<<< user nick set')
         $('#userName').val(res);
         myName = res;
     });
+
+    socket.on('user list', (list) => {
+        var users = [];
+        var listStr = JSON.stringify(list);
+        var listObj = JSON.parse(listStr);
+        for (var listSize in listObj) {
+            name = listObj[listSize].joinnick;
+            users.push(name);
+        }
+        $('#userList').text(users);
+    })
 
     // 보내기 버튼 클릭했을 때 채팅 입력
     $('#sendBtn').click(function () {
@@ -44,9 +55,9 @@
     // $('#userList').append($('<li>').text(data));
     // });
 
-    socket.on('guestIn', function (data) {
-        $('#messages').append($('<li id="noti">').text(data + ' 님이 입장하셨습니다.'));
-        $('#chatLog').scrollTop($('#chatLog')[0].scrollHeight);
-    });
+    // socket.on('guestIn', function (data) {
+    //     $('#messages').append($('<li id="noti">').text(data + ' 님이 입장하셨습니다.'));
+    //     $('#chatLog').scrollTop($('#chatLog')[0].scrollHeight);
+    // });
 
 </script>
