@@ -10,13 +10,15 @@ var nick = "";
 var playerList = [
 ];
 
-console.log('--------------server start--------------')
+var port = 2900;
+
+console.log('port : ' + port + '--------------server start--------------')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // 서버 포트
-http.listen(2900, '0.0.0.0');
+http.listen(port, '0.0.0.0');
 
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
     addr = add;
